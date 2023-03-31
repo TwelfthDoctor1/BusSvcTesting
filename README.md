@@ -9,4 +9,4 @@ For this version of the code, it is intended to be used on devices such as:
 * Raspberry Pi (the Pico version does not apply here)
 * Devices that can run Python (Mainly computers)
 
-The MicroPython version will be released onto a separate branch at a later date.
+For the  MicroPython version, please view [here](https://github.com/TwelfthDoctor1/BusSvcDisplay-micropython).
