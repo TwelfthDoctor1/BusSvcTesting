@@ -41,9 +41,43 @@ def calculate_est_duration(dur_1: int, dur_2: int, dur_3: int):
     return round(est_duration, 1)
 
 
-def request_bus_stop_timing(bus_stop_code: int, API_KEY: str, API_URL: str):
-    # Add-on Param
+def request_bus_stop_timing(bus_stop_code: int or str, API_KEY: str, API_URL: str, svc_num: list = []):
+    """
+    Core Function to get and return the Timings of Services for a Bus Stop.
+    For a specific number in Services, define the Service Number.
+    :param bus_stop_code: The 5-digit Bus Stop code. Should be in string, integer not recommended for it may remove
+                          leading zeros.
+    :param API_KEY: The API Key to allow calling of API services.
+    :param API_URL: The API URL Request Link. (LTA DataMall)
+    :param svc_num: A list of Bus Service Numbers to explicitly see. Optional, either string or integer is accepted in a
+                    list.
+    :return: A Tuple of 18 values (exc. !):
+             [0] -> Service Number,
+             [1] -> Service Operator,
+             [2] -> First Bus Timing in XX min @ XX:XX:XX,
+             [3] -> Second Bus Timing in XX min @ XX:XX:XX,
+             [4] -> Third Bus Timing in XX min @ XX:XX:XX,
+             [5] -> First Bus Seating Availability,
+             [6] -> Second Bus Seating Availability,
+             [7] -> Third Bus Seating Availability,
+             [8] -> First Bus Type,
+             [9] -> Second Bus Type,
+             [10] -> Third Bus Type,
+             [11] -> First Bus Visit Status,
+             [12] -> Second Bus Visit Status,
+             [13] -> Third Bus Visit Status,
+             [14] -> Estimated Duration for all 3 buses,
+             [15] -> Estimated Duration for 1st Visit Buses,
+             [16] -> Estimated Duration for 2nd Visit Buses,
+             [17] -> Boolean State to state whether all buses are on 1st Visit only,
+             [!] -> Note: For 14 to 17, bool state is to be used to determine on which type of duration(s) to be shown.
+    """
+    # URL Construct
     URL = f"{API_URL}?BusStopCode={bus_stop_code}"
+
+    # Service Specific Addition - To use sep. method instead
+    # if svc_num != "":
+    #     URL += f"&ServiceNo={svc_num}"
 
     # Header Data
     headers = {
@@ -164,6 +198,18 @@ def request_bus_stop_timing(bus_stop_code: int, API_KEY: str, API_URL: str):
 
         # for bus_svc in dict_data["Services"]:
         for bus_ref in bus_list:
+            # Should there be an explicit to see list of bus stop numbers
+            # i.e. 3 to be seen from 3, 34, ...
+            if len(svc_num) > 0:
+                for svc_check in svc_num:
+                    svc_check_test = False
+                    if svc_check == str(bus_ref[0]):
+                        svc_check_test = True
+                        break
+
+                if svc_check_test is False:
+                    continue
+
             bus_svc = dict_data["Services"][bus_ref[1]]
 
             # Handle 1st Bus
@@ -182,11 +228,11 @@ def request_bus_stop_timing(bus_stop_code: int, API_KEY: str, API_URL: str):
                 )
 
                 duration = round((dt_nb - dt).seconds / 60)
-                if duration <= 1 or duration > 1000:
+                if duration < 1 or duration > 1000:
                     next_bus = "Arriving"
-                    duration = 1
+                    duration = 0
                 else:
-                    next_bus = f"{duration} mins"
+                    next_bus = f"{duration} min"
 
             else:
                 next_bus = "Not in Service"
@@ -209,11 +255,11 @@ def request_bus_stop_timing(bus_stop_code: int, API_KEY: str, API_URL: str):
                 )
 
                 duration2 = round((dt_nb2 - dt).seconds / 60)
-                if duration2 <= 1 or duration2 > 1000:
+                if duration2 < 1 or duration2 > 1000:
                     next_bus2 = "Arriving"
-                    duration2 = 1
+                    duration2 = 0
                 else:
-                    next_bus2 = f"{duration2} mins"
+                    next_bus2 = f"{duration2} min"
 
             else:
                 next_bus2 = "Not in Service"
@@ -236,11 +282,11 @@ def request_bus_stop_timing(bus_stop_code: int, API_KEY: str, API_URL: str):
                 )
 
                 duration3 = round((dt_nb3 - dt).seconds / 60)
-                if duration3 <= 1 or duration3 > 1000:
+                if duration3 < 1 or duration3 > 1000:
                     next_bus3 = "Arriving"
-                    duration3 = 1
+                    duration3 = 0
                 else:
-                    next_bus3 = f"{duration3} mins"
+                    next_bus3 = f"{duration3} min"
 
             else:
                 next_bus3 = "Not in Service"

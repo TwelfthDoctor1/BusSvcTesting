@@ -20,14 +20,19 @@ class TransportMenu(QMainWindow):
     def parseBusStopNumber(self):
         bus_count = 0
         bus_stop_num = self.ui.BusStopNumber.text()
+        svc_list_str = self.ui.ExplicitSvcList.text()
 
-        if bus_stop_num.isdigit() is False:
-            return
+        if svc_list_str == "":
+            bus_svc_list = []
+
         else:
-            bus_stop_num = int(bus_stop_num)
+            bus_svc_list = svc_list_str.split(",")
+
+            for i in range(len(bus_svc_list)):
+                bus_svc_list[i] = bus_svc_list[i].strip()
 
         # Request For Data
-        bus_stop_list = request_bus_stop_timing(bus_stop_num, self.parser[0], self.parser[1])
+        bus_stop_list = request_bus_stop_timing(bus_stop_num, self.parser[0], self.parser[1], bus_svc_list)
 
         # Clear Table
         self.ui.BusStopTable.clear()
