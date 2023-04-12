@@ -41,7 +41,8 @@ def calculate_est_duration(dur_1: int, dur_2: int, dur_3: int):
     return round(est_duration, 1)
 
 
-def request_bus_stop_timing(bus_stop_code: int or str, API_KEY: str, API_URL: str, svc_num: list = []):
+def request_bus_stop_timing(bus_stop_code: int or str, API_KEY: str, API_URL: str, svc_num: list = [],
+                            fallback_header: bool = False):
     """
     Core Function to get and return the Timings of Services for a Bus Stop.
     For a specific number in Services, define the Service Number.
@@ -51,6 +52,7 @@ def request_bus_stop_timing(bus_stop_code: int or str, API_KEY: str, API_URL: st
     :param API_URL: The API URL Request Link. (LTA DataMall)
     :param svc_num: A list of Bus Service Numbers to explicitly see. Optional, either string or integer is accepted in a
                     list.
+    :param fallback_header: A boolean state that determines whether the fallback header should be used. (Shows the code)
     :return: A Tuple of 18 values (exc. !):
              [0] -> Service Number,
              [1] -> Service Operator,
@@ -190,11 +192,12 @@ def request_bus_stop_timing(bus_stop_code: int or str, API_KEY: str, API_URL: st
 
         # print(bus_list)
 
-        print(
-            f"=======================================================================================\n"
-            f"Bus Stop No: {bus_stop_code} Services\n"
-            f"======================================================================================="
-        )
+        if fallback_header is True:
+            print(
+                f"=======================================================================================\n"
+                f"Bus Stop No: {bus_stop_code} Services\n"
+                f"======================================================================================="
+            )
 
         # for bus_svc in dict_data["Services"]:
         for bus_ref in bus_list:

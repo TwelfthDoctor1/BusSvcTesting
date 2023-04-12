@@ -1,7 +1,8 @@
 import sys
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem, QTableWidget
-from TransportAPI.BusStop import request_bus_stop_timing
+from TransportAPI.BusArrival import request_bus_stop_timing
+from TransportAPI.BusStopInfo import request_bus_stop_name_lta
 from UI.UI_TransportUI import Ui_TransportService
 
 
@@ -32,7 +33,11 @@ class TransportMenu(QMainWindow):
                 bus_svc_list[i] = bus_svc_list[i].strip()
 
         # Request For Data
-        bus_stop_list = request_bus_stop_timing(bus_stop_num, self.parser[0], self.parser[1], bus_svc_list)
+
+        header_check = request_bus_stop_name_lta(bus_stop_num, self.parser[0], self.parser[2])
+        fallback_header = not header_check[2]
+        bus_stop_list = request_bus_stop_timing(
+            bus_stop_num, self.parser[0], self.parser[1], bus_svc_list, fallback_header)
 
         # Clear Table
         self.ui.BusStopTable.clear()
@@ -42,8 +47,12 @@ class TransportMenu(QMainWindow):
         self.ui.BusStopTable.setRowCount(bus_num * 9)
         self.ui.BusStopTable.setColumnCount(5)
 
-        self.ui.BusStopTable.setItem(0, 0, QTableWidgetItem(f"Bus Services for: "))
-        self.ui.BusStopTable.setItem(0, 1, QTableWidgetItem(f"{bus_stop_num}"))
+        if fallback_header is False:
+            self.ui.BusStopTable.setItem(0, 0, QTableWidgetItem(f"{header_check[0]} @ {header_check[1]}"))
+            self.ui.BusStopTable.setItem(0, 1, QTableWidgetItem(f"[{bus_stop_num}]"))
+        else:
+            self.ui.BusStopTable.setItem(0, 0, QTableWidgetItem(f"Bus Services for: "))
+            self.ui.BusStopTable.setItem(0, 1, QTableWidgetItem(f"{bus_stop_num}"))
 
         # Populate Table
         for bus in bus_stop_list:
@@ -93,6 +102,8 @@ class TransportMenu(QMainWindow):
         # Update Table
         self.updateTable()
         self.updateTable()
+
+        self.ui.statusbar.showMessage("Bus Arrival Timing Data acquired & loaded.", 2000)
 
     def resizeEvent(self, a0: QResizeEvent):
         self.ui.BusStopTable.update()

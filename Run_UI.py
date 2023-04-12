@@ -10,9 +10,10 @@ ENV_PATH = os.path.join(Path(__file__).resolve().parent, "RefKey.env")
 load_dotenv(dotenv_path=ENV_PATH)
 
 # Get Values from ENV
-API_KEY = os.getenv("API_KEY")
-API_URL = os.getenv("API_BUS_TIMING_URL")
-ENV_LIST = [API_KEY, API_URL]
+API_KEY_LTA = os.getenv("API_KEY_LTA")
+TIMING_URL = os.getenv("API_BUS_ARRIVAL_URL")
+BUS_STOP_URL = os.getenv("API_BUS_STOP_URL")
+ENV_LIST = [API_KEY_LTA, TIMING_URL, BUS_STOP_URL]
 
 # Parse Data to UI
 parse_to_ui(ENV_LIST)

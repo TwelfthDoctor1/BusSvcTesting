@@ -22,8 +22,8 @@ Before running the code, the following modules are required:
 You also need to setup a `RefKey.env` file with the following values:
 
 ```dotenv
-API_KEY=XXX
-API_BUS_TIMING_URL=http://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2
+API_KEY_LTA=XXX
+API_BUS_ARRIVAL_URL=http://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2
 API_BUS_SVC_URL=http://datamall2.mytransport.sg/ltaodataservice/BusServices
 API_BUS_STOP_URL=http://datamall2.mytransport.sg/ltaodataservice/BusStops
 ```
