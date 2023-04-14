@@ -4,26 +4,22 @@ import urllib.request
 from UtilLib.StringLib import *
 
 
+SEATING = [("SEA", "Seating Available"), ("SDA", "Standing Available"), ("LSD", "Limited Standing")]
+BUS_TYPE = [("SD", "Single Deck"), ("DD", "Double Deck"), ("BD", "Bendy")]
+
+
 def interpret_seating(seating: str):
-    if seating == "SEA":
-        return "Seating Available"
-    elif seating == "SDA":
-        return "Standing Available"
-    elif seating == "LSD":
-        return "Limited Standing"
-    else:
-        return ""
+    for seating_data in SEATING:
+        if seating == seating_data[0]:
+            return seating_data[1]
+    return ""
 
 
 def interpret_type(bus_type: str):
-    if bus_type == "SD":
-        return "Single Deck"
-    elif bus_type == "DD":
-        return "Double Deck"
-    elif bus_type == "BD":
-        return "Bendy"
-    else:
-        return ""
+    for type_data in BUS_TYPE:
+        if bus_type == type_data[0]:
+            return type_data[1]
+    return ""
 
 
 def calculate_est_duration(dur_1: int, dur_2: int, dur_3: int):
@@ -41,18 +37,18 @@ def calculate_est_duration(dur_1: int, dur_2: int, dur_3: int):
     return round(est_duration, 1)
 
 
-def request_bus_stop_timing(bus_stop_code: int or str, API_KEY: str, API_URL: str, svc_num: list = [],
-                            fallback_header: bool = False):
+def request_bus_stop_timing(bus_stop_code: int or str, api_key: str, svc_num: list,
+                            fallback_header: bool = False, debug: bool = False):
     """
     Core Function to get and return the Timings of Services for a Bus Stop.
     For a specific number in Services, define the Service Number.
     :param bus_stop_code: The 5-digit Bus Stop code. Should be in string, integer not recommended for it may remove
                           leading zeros.
-    :param API_KEY: The API Key to allow calling of API services.
-    :param API_URL: The API URL Request Link. (LTA DataMall)
+    :param api_key: The API Key to allow calling of API services.
     :param svc_num: A list of Bus Service Numbers to explicitly see. Optional, either string or integer is accepted in a
                     list.
     :param fallback_header: A boolean state that determines whether the fallback header should be used. (Shows the code)
+    :param debug: A boolean state to show debug text
     :return: A Tuple of 18 values (exc. !):
              [0] -> Service Number,
              [1] -> Service Operator,
@@ -72,10 +68,12 @@ def request_bus_stop_timing(bus_stop_code: int or str, API_KEY: str, API_URL: st
              [15] -> Estimated Duration for 1st Visit Buses,
              [16] -> Estimated Duration for 2nd Visit Buses,
              [17] -> Boolean State to state whether all buses are on 1st Visit only,
+             [18] -> Origin Bus Stop,
+             [19] -> Destination Bus Stop,
              [!] -> Note: For 14 to 17, bool state is to be used to determine on which type of duration(s) to be shown.
     """
     # URL Construct
-    URL = f"{API_URL}?BusStopCode={bus_stop_code}"
+    url = f"http://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2?BusStopCode={bus_stop_code}"
 
     # Service Specific Addition - To use sep. method instead
     # if svc_num != "":
@@ -83,18 +81,18 @@ def request_bus_stop_timing(bus_stop_code: int or str, API_KEY: str, API_URL: st
 
     # Header Data
     headers = {
-        "AccountKey": API_KEY,
+        "AccountKey": api_key,
         "accept": "application/json"
     }
 
-    REQUEST = urllib.request.Request(url=URL, method="GET", headers=headers)
+    request = urllib.request.Request(url=url, method="GET", headers=headers)
 
     dt = datetime.datetime.now()
     bus_list = []
     sp_bus_list = []
     bus_stop_list = []
     sorted_sp_bus = []
-    with urllib.request.urlopen(REQUEST) as response:
+    with urllib.request.urlopen(request) as response:
         json_data = response.read().decode("utf-8")
         dict_data = json.loads(json_data)
         inc = 0
@@ -192,7 +190,7 @@ def request_bus_stop_timing(bus_stop_code: int or str, API_KEY: str, API_URL: st
 
         # print(bus_list)
 
-        if fallback_header is True:
+        if fallback_header is True and debug is True:
             print(
                 f"=======================================================================================\n"
                 f"Bus Stop No: {bus_stop_code} Services\n"
@@ -382,30 +380,31 @@ def request_bus_stop_timing(bus_stop_code: int or str, API_KEY: str, API_URL: st
                 est_dur_1 = calculate_est_duration(visit_1[0], visit_1[1], visit_1[2])
                 est_dur_2 = calculate_est_duration(visit_2[0], visit_2[1], visit_2[2])
 
-            print(
-                f"Service [{bus_svc['ServiceNo']}] | {bus_svc['Operator']}\n"
-                f"=======================================================================================\n"
-                f"1. {next_bus} @ {nb_time[0]}:{nb_time[1]}:{nb_time[2]} ({bus_svc['NextBus']['EstimatedArrival']})"
-                f" | {interpret_seating(bus_svc['NextBus']['Load'])} | {interpret_type(bus_svc['NextBus']['Type'])}"
-                f" | Visit: {bus_svc['NextBus']['VisitNumber']}\n"
-                f"2. {next_bus2} @ {nb_time2[0]}:{nb_time2[1]}:{nb_time2[2]} "
-                f"({bus_svc['NextBus2']['EstimatedArrival']}) | {interpret_seating(bus_svc['NextBus2']['Load'])} | "
-                f"{interpret_type(bus_svc['NextBus2']['Type'])}"
-                f" | Visit: {bus_svc['NextBus2']['VisitNumber']}\n"
-                f"3. {next_bus3} @ {nb_time3[0]}:{nb_time3[1]}:{nb_time3[2]} "
-                f"({bus_svc['NextBus3']['EstimatedArrival']}) | {interpret_seating(bus_svc['NextBus3']['Load'])} | "
-                f"{interpret_type(bus_svc['NextBus3']['Type'])}"
-                f" | Visit: {bus_svc['NextBus3']['VisitNumber']}\n"
-            )
+            if debug is True:
+                print(
+                    f"Service [{bus_svc['ServiceNo']}] | {bus_svc['Operator']}\n"
+                    f"=======================================================================================\n"
+                    f"1. {next_bus} @ {nb_time[0]}:{nb_time[1]}:{nb_time[2]} ({bus_svc['NextBus']['EstimatedArrival']})"
+                    f" | {interpret_seating(bus_svc['NextBus']['Load'])} | {interpret_type(bus_svc['NextBus']['Type'])}"
+                    f" | Visit: {bus_svc['NextBus']['VisitNumber']}\n"
+                    f"2. {next_bus2} @ {nb_time2[0]}:{nb_time2[1]}:{nb_time2[2]} "
+                    f"({bus_svc['NextBus2']['EstimatedArrival']}) | {interpret_seating(bus_svc['NextBus2']['Load'])} | "
+                    f"{interpret_type(bus_svc['NextBus2']['Type'])}"
+                    f" | Visit: {bus_svc['NextBus2']['VisitNumber']}\n"
+                    f"3. {next_bus3} @ {nb_time3[0]}:{nb_time3[1]}:{nb_time3[2]} "
+                    f"({bus_svc['NextBus3']['EstimatedArrival']}) | {interpret_seating(bus_svc['NextBus3']['Load'])} | "
+                    f"{interpret_type(bus_svc['NextBus3']['Type'])}"
+                    f" | Visit: {bus_svc['NextBus3']['VisitNumber']}\n"
+                )
 
-            print(
-                f"Estimated Duration: {est_dur} mins" if one_visit is True else
-                f"Estimated Duration (Visit 1): {est_dur_1} mins\nEstimated Duration (Visit 2): {est_dur_2} mins"
-            )
+                print(
+                    f"Estimated Duration: {est_dur} mins" if one_visit is True else
+                    f"Estimated Duration (Visit 1): {est_dur_1} mins\nEstimated Duration (Visit 2): {est_dur_2} mins"
+                )
 
-            print(
-                f"======================================================================================="
-            )
+                print(
+                    f"======================================================================================="
+                )
 
             # Append Compiled Data
             bus_stop_list.append(
@@ -427,7 +426,9 @@ def request_bus_stop_timing(bus_stop_code: int or str, API_KEY: str, API_URL: st
                     est_dur,  # [14]
                     est_dur_1,  # [15]
                     est_dur_2,  # [16]
-                    one_visit  # [17]
+                    one_visit,  # [17]
+                    bus_svc['NextBus']['OriginCode'],  # [18]
+                    bus_svc['NextBus']['DestinationCode']  # [19]
                 )
             )
 

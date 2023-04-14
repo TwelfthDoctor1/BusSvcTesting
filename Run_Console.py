@@ -1,8 +1,9 @@
 import os
 from dotenv import load_dotenv
 from pathlib import Path
-from TransportAPI.BusArrival import request_bus_stop_timing
-from TransportAPI.BusStopInfo import request_bus_stop_name_lta
+from TransportAPI.APIHandler import TransportAPIHandler
+from TransportAPI.BusStopInfo import store_bus_stop_data
+from TransportAPI.BusService import store_bus_svc_data
 
 KEY_BUS_STOPS = ["77009", "77011", "77191", "65191", "65199"]
 
@@ -13,14 +14,16 @@ load_dotenv(dotenv_path=ENV_PATH)
 
 # Get Values from ENV
 API_KEY_LTA = os.getenv("API_KEY_LTA")
-TIMING_URL = os.getenv("API_BUS_ARRIVAL_URL")
-BUS_STOP_URL = os.getenv("API_BUS_STOP_URL")
-ENV_LIST = [API_KEY_LTA, TIMING_URL, BUS_STOP_URL]
+ENV_LIST = [API_KEY_LTA]
 
 user_input = 0
 bus_mem = ""
 quit_refresh = ""
 svc_mem = ""
+api_handler = TransportAPIHandler(API_KEY_LTA)
+store_bus_stop_data(API_KEY_LTA)
+store_bus_svc_data(API_KEY_LTA)
+
 
 while True:
     if bus_mem == "":
@@ -67,18 +70,14 @@ Services:
         if len(user_input_str) == 5:
             bus_stop_code = user_input_str
             bus_mem = user_input_str
-            header_check = request_bus_stop_name_lta(bus_stop_code, API_KEY_LTA, BUS_STOP_URL)
-            fallback_header = not header_check[2]
-            request_bus_stop_timing(bus_stop_code, API_KEY_LTA, TIMING_URL, bus_svc_list, fallback_header)
+            api_handler.request_arrival_time(bus_stop_code, bus_svc_list)
 
         # Key Bus Stops
         elif user_input_str.isdigit() and int(user_input_str) <= len(KEY_BUS_STOPS):
             user_input = eval(user_input_str)
             bus_stop_code = KEY_BUS_STOPS[user_input - 1]
             bus_mem = KEY_BUS_STOPS[user_input - 1]
-            header_check = request_bus_stop_name_lta(bus_stop_code, API_KEY_LTA, BUS_STOP_URL)
-            fallback_header = not header_check[2]
-            request_bus_stop_timing(bus_stop_code, API_KEY_LTA, TIMING_URL, bus_svc_list, fallback_header)
+            api_handler.request_arrival_time(bus_stop_code, bus_svc_list)
 
         # Quit
         elif user_input_str.isalpha() and user_input_str.lower() == "q":
@@ -90,9 +89,7 @@ Services:
             print("Unknown variable, please try again.")
 
     else:
-        header_check = request_bus_stop_name_lta(bus_mem, API_KEY_LTA, BUS_STOP_URL)
-        fallback_header = not header_check[2]
-        request_bus_stop_timing(bus_mem, API_KEY_LTA, TIMING_URL, svc_mem, fallback_header)
+        api_handler.request_arrival_time(bus_mem, svc_mem)
 
     quit_refresh = ""
     while quit_refresh != "q" and quit_refresh != "r":

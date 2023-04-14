@@ -35,7 +35,8 @@ class JSONHandler:
             json_ref.close()
 
         self.logger.info(
-            "Formulated & ascertained JSON File Data. Data can now be acquired/set with get/set functions."
+            "Formulated & ascertained JSON File Data. Data can now be acquired/set with get/set functions.",
+            to_console=False
         )
 
         return True
@@ -50,7 +51,7 @@ class JSONHandler:
         """
         if os.path.exists(self.json_fp) is False:
 
-            self.logger.info(f"JSON File ({self.json}) does not exist. Creating...")
+            self.logger.info(f"JSON File ({self.json}) does not exist. Creating...", to_console=False)
 
             with open(self.json_fp, "w") as json_file:
                 json_file.write(json_dump(data_dict))
@@ -58,7 +59,7 @@ class JSONHandler:
 
             return True
         else:
-            self.logger.info(f"JSON File ({self.json}) already exists. Skipping...")
+            self.logger.info(f"JSON File ({self.json}) already exists. Skipping...", to_console=False)
             return False
 
     def update_json_file(self):
@@ -67,12 +68,13 @@ class JSONHandler:
         :return:
         """
         with open(self.json_fp, "w") as json_file:
-            print(json_dump(self.json_data))
+            # print(json_dump(self.json_data))
             json_file.write(json_dump(self.json_data))
             json_file.close()
 
         self.logger.info(
-            "JSON File has been updated. All previous data entries have been overridden."
+            "JSON File has been updated. All previous data entries have been overridden.",
+            to_console=False
         )
 
     def return_json(self):

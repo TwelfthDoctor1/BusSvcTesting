@@ -4,43 +4,47 @@ import ssl
 import urllib.request
 from dotenv import load_dotenv
 from pathlib import Path
+from UtilLib.JSONHandler import JSONHandler
+
+bus_stop_data: JSONHandler
 
 
-def request_bus_stop_name_lta(bus_stop_code: int or str, API_KEY: str, API_URL: str):
+def request_bus_stop_name_lta(bus_stop_code: int or str, api_key: str, debug: bool = False):
     """
     Gets and returns the Bus Stop Information of the Bus Stop.
 
     This method makes use of the data limit to cycle and check through if the codes matches.
     :param bus_stop_code: 5-digit Bus Stop Code
-    :param API_KEY: LTA API Key
-    :param API_URL: LTA Bus Stop API URL
+    :param api_key: LTA API Key
+    :param debug: A boolean state to show debug text
     :return: Tuple containing:
-             [0] -> Description
-             [1] -> Road Name
+             [0] -> Description,
+             [1] -> Road Name,
              [2] -> Acquisition Success (for use in fallback)
     """
     skip_val = 0
     while True:
-        URL = f"{API_URL}?$skip={skip_val}"
+        url = f"http://datamall2.mytransport.sg/ltaodataservice/BusStops?$skip={skip_val}"
 
         headers = {
-            "AccountKey": API_KEY,
+            "AccountKey": api_key,
             "accept": "application/json"
         }
 
-        REQUEST = urllib.request.Request(url=URL, method="GET", headers=headers)
+        request = urllib.request.Request(url=url, method="GET", headers=headers)
 
-        with urllib.request.urlopen(REQUEST) as response:
+        with urllib.request.urlopen(request) as response:
             json_dict = response.read().decode("utf-8")
             dict_data = json.loads(json_dict)
 
             for data in dict_data["value"]:
                 if data["BusStopCode"] == str(bus_stop_code):
-                    print(
-                        f"=======================================================================================\n"
-                        f"{data['Description']} @ {data['RoadName']} [{bus_stop_code}]\n"
-                        f"======================================================================================="
-                    )
+                    if debug is True:
+                        print(
+                            f"=======================================================================================\n"
+                            f"{data['Description']} @ {data['RoadName']} [{bus_stop_code}]\n"
+                            f"======================================================================================="
+                        )
 
                     return (
                         data["Description"],
@@ -59,23 +63,22 @@ def request_bus_stop_name_lta(bus_stop_code: int or str, API_KEY: str, API_URL: 
                 skip_val += 500
 
 
-def request_bus_stop_name_tih(bus_stop_code: int or str, API_KEY: str, API_URL: str):
+def request_bus_stop_name_tih(bus_stop_code: int or str, api_key: str):
     """
     RECOMMENDED NOT FOR USE FOR SECURITY REASONS.
 
     This API on TIH gets the data of the Bus Stop Information by referencing with a bus stop code.
     However due to certification issues (which is bypassed), it is therefore not recommended to use it.
     :param bus_stop_code: The 5-digit Bus Stop Code
-    :param API_KEY: TIH API Key
-    :param API_URL: TIH Bus Stop URL
+    :param api_key: TIH API Key
     :return: Tuple containing:
              [0] -> Description,
              [1] -> Road Name
     """
-    URL = f"{API_URL}/{bus_stop_code}"
+    url = f"https://api.stb.gov.sg/services/transport/v2/bus-stops/{bus_stop_code}"
 
     headers = {
-        "X-API-Key": API_KEY,
+        "X-API-Key": api_key,
         "accept": "application/json"
     }
 
@@ -83,15 +86,57 @@ def request_bus_stop_name_tih(bus_stop_code: int or str, API_KEY: str, API_URL: 
     ssl_ctx.check_hostname = False
     ssl_ctx.verify_mode = ssl.CERT_NONE
 
-    REQUEST = urllib.request.Request(url=URL, headers=headers, method="GET")
+    request = urllib.request.Request(url=url, headers=headers, method="GET")
 
-    with urllib.request.urlopen(REQUEST, context=ssl_ctx) as response:
+    with urllib.request.urlopen(request, context=ssl_ctx) as response:
         json_dict = response.read().decode("utf-8")
         dict_data = json.loads(json_dict)
         return (
             dict_data["data"][0]["description"],
             dict_data["data"][0]["roadName"]
         )
+
+
+def store_bus_stop_data(api_key: str):
+    global bus_stop_data
+    bus_stop_data = JSONHandler("BusStopData")
+
+    curr_data = {"value": []}
+    skip_val = 0
+    while True:
+        url = f"http://datamall2.mytransport.sg/ltaodataservice/BusStops?$skip={skip_val}"
+
+        headers = {
+            "AccountKey": api_key,
+            "accept": "application/json"
+        }
+
+        request = urllib.request.Request(url=url, method="GET", headers=headers)
+
+        with urllib.request.urlopen(request) as response:
+            json_dict = response.read().decode("utf-8")
+            dict_data = json.loads(json_dict)
+
+            curr_data["value"].extend(dict_data["value"])
+
+            if len(dict_data["value"]) < 500:
+                break
+
+            else:
+                skip_val += 500
+
+    bus_stop_data.update_json(curr_data)
+    bus_stop_data.update_json_file()
+    bus_stop_data.formulate_json()
+
+
+def return_bus_stop_name_json(bus_stop_code: str):
+    for data in bus_stop_data.return_specific_json("value"):
+        if data["BusStopCode"] == bus_stop_code:
+            return (
+                data["Description"],
+                data["RoadName"]
+                )
 
 
 if __name__ == "__main__":
@@ -102,11 +147,8 @@ if __name__ == "__main__":
 
     # Get Values from ENV
     API_KEY_LTA = os.getenv("API_KEY_LTA")
-    LTA_BUS_STOP_URL = os.getenv("API_BUS_STOP_URL")
     API_KEY_TIH = os.getenv("API_KEY_TIH")
-    TIH_BUS_STOP_URL = os.getenv("API_BUS_STOP_TIH_URL")
 
-    returner = request_bus_stop_name_lta(77009, API_KEY_LTA, LTA_BUS_STOP_URL)
-    # returner = request_bus_stop_name_tih(77009, API_KEY_TIH, TIH_BUS_STOP_URL)
+    returner = request_bus_stop_name_lta(77009, API_KEY_LTA)
 
     print(f"{returner[0]} | {returner[1]}")
