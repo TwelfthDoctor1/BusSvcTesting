@@ -4,7 +4,7 @@ from UtilLib.JSONParser import json_load, json_dump
 from UtilLib.Logging import LoggerClass
 
 # Filepath to hold the JSON File
-JSON_LIB = os.path.join(Path(__file__).resolve().parent.parent, "JSONDatabase")
+JSON_LIB = os.path.join(Path(__file__).resolve().parent.parent, "JSONLib")
 
 
 class JSONHandler:

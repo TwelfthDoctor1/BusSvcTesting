@@ -68,7 +68,7 @@ def request_bus_stop_name_tih(bus_stop_code: int or str, api_key: str):
     RECOMMENDED NOT FOR USE FOR SECURITY REASONS.
 
     This API on TIH gets the data of the Bus Stop Information by referencing with a bus stop code.
-    However due to certification issues (which is bypassed), it is therefore not recommended to use it.
+    However, due to certification issues (which is bypassed), it is therefore not recommended to use it.
     :param bus_stop_code: The 5-digit Bus Stop Code
     :param api_key: TIH API Key
     :return: Tuple containing:

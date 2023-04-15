@@ -179,7 +179,7 @@ def request_bus_stop_timing(bus_stop_code: int or str, api_key: str, svc_num: li
                     if i + 1 == len(bus_list) - 1:
                         break
 
-            print(sorted_sp_bus)
+            # print(sorted_sp_bus)
 
             if has_sorted is True:
                 continue
