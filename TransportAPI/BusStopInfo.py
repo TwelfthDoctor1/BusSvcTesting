@@ -139,6 +139,17 @@ def return_bus_stop_name_json(bus_stop_code: str):
                 )
 
 
+def request_bus_stop_code_from_name(stop_name: str, road_name: str = ""):
+    for data in bus_stop_data.return_specific_json("value"):
+        if data["Description"].lower() == stop_name.lower() and road_name == "":
+            return data["BusStopCode"]
+
+        if data["Description"].lower() == stop_name.lower() and data["RoadName"].lower() == road_name:
+            return data["BusStopCode"]
+
+    return "00000"
+
+
 if __name__ == "__main__":
     ENV_PATH = os.path.join(Path(__file__).resolve().parent.parent, "RefKey.env")
 
