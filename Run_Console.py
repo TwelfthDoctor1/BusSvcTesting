@@ -16,14 +16,16 @@ load_dotenv(dotenv_path=ENV_PATH)
 API_KEY_LTA = os.getenv("API_KEY_LTA")
 ENV_LIST = [API_KEY_LTA]
 
-user_input = 0
-bus_mem = ""
-quit_refresh = ""
-svc_mem = ""
+# API Handling & Data Caching
 api_handler = TransportAPIHandler(API_KEY_LTA)
 store_bus_stop_data(API_KEY_LTA)
 store_bus_svc_data(API_KEY_LTA)
 
+
+user_input = 0
+bus_mem = ""
+quit_refresh = ""
+svc_mem = ""
 
 while True:
     if bus_mem == "":
@@ -42,15 +44,20 @@ Option/Code:
 """
         )
 
-        bus_svc_list_str = input(
-            """Explicit Services View
+        if user_input_str.lower() != "q":
+            bus_svc_list_str = input(
+                """Explicit Services View
 
 Enter the explicit bus services to see only. Otherwise leave as blank to see all services.
 i.e.: 5, 12e, 46
 
 Services: 
 """
-        )
+            )
+
+        else:
+            print("Exiting...")
+            exit()
 
         if bus_svc_list_str == "":
             bus_svc_list = []
@@ -64,7 +71,7 @@ Services:
 
             svc_mem = bus_svc_list
 
-        # Formulate Header
+        # Formulate Header & Get Arrival Time
 
         # Custom Bus Stop
         if len(user_input_str) == 5:
@@ -78,11 +85,6 @@ Services:
             bus_stop_code = KEY_BUS_STOPS[user_input - 1]
             bus_mem = KEY_BUS_STOPS[user_input - 1]
             api_handler.request_arrival_time(bus_stop_code, bus_svc_list)
-
-        # Quit
-        elif user_input_str.isalpha() and user_input_str.lower() == "q":
-            print("Exiting...")
-            exit()
 
         # Unknown Value
         else:

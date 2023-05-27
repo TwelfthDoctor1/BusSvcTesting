@@ -15,6 +15,7 @@ load_dotenv(dotenv_path=ENV_PATH)
 API_KEY_LTA = os.getenv("API_KEY_LTA")
 ENV_LIST = [API_KEY_LTA]
 
+# Data Caching
 store_bus_stop_data(API_KEY_LTA)
 store_bus_svc_data(API_KEY_LTA)
 
