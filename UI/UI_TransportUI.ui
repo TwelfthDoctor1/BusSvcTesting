@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>880</width>
-    <height>446</height>
+    <width>918</width>
+    <height>539</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,136 +16,264 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="font">
-         <font>
-          <family>Helvetica</family>
-          <pointsize>18</pointsize>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Bus Arrival Timings</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTableWidget" name="BusStopTable">
-        <property name="font">
-         <font>
-          <pointsize>16</pointsize>
-         </font>
-        </property>
-        <attribute name="horizontalHeaderVisible">
-         <bool>false</bool>
-        </attribute>
-        <attribute name="verticalHeaderVisible">
-         <bool>false</bool>
-        </attribute>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+     <widget class="QTabWidget" name="BusServiceTab">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="BusTimingTab">
+       <attribute name="title">
+        <string>Bus Timing</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <spacer name="horizontalSpacer">
+         <widget class="QLabel" name="BusArrTitle">
+          <property name="font">
+           <font>
+            <family>Helvetica</family>
+            <pointsize>18</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Bus Arrival Timings</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_18">
-          <property name="text">
-           <string>Bus Stop Number: </string>
-          </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="BusStopNumber"/>
-        </item>
-        <item>
-         <widget class="Line" name="line_5">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
+         <widget class="QTableWidget" name="BusStopTable">
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
           </property>
+          <attribute name="horizontalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Explicit Services: </string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="ExplicitSvcList"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="EnterButton">
-          <property name="text">
-           <string>Enter</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_2">
+         <widget class="Line" name="line_3">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-         </spacer>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="BusStopLabel">
+            <property name="text">
+             <string>Bus Stop Number: </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="BusStopNumber"/>
+          </item>
+          <item>
+           <widget class="Line" name="line_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="ExplicitSvcLabel">
+            <property name="text">
+             <string>Explicit Services: </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="ExplicitSvcList"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="EnterButton">
+            <property name="text">
+             <string>Enter</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
         </item>
        </layout>
-      </item>
-      <item>
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
+      </widget>
+      <widget class="QWidget" name="BusSvcTab">
+       <attribute name="title">
+        <string>Bus Services</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="BusSvcTitle">
+          <property name="font">
+           <font>
+            <family>Helvetica</family>
+            <pointsize>18</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Bus Services</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="BusSvcTable">
+          <attribute name="horizontalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_8">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="BusSvcLabel">
+            <property name="text">
+             <string>Bus Service: </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="BusSvcList"/>
+          </item>
+          <item>
+           <widget class="Line" name="line_10">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="SvcDirLabel">
+            <property name="text">
+             <string>Service Direction: </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="SvcDirList"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="svcEnterBtn">
+            <property name="text">
+             <string>Enter</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line_9">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -154,7 +282,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>880</width>
+     <width>918</width>
      <height>24</height>
     </rect>
    </property>
@@ -170,8 +298,8 @@
    <slot>parseBusStopNumber()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>723</x>
-     <y>391</y>
+     <x>754</x>
+     <y>455</y>
     </hint>
     <hint type="destinationlabel">
      <x>711</x>
@@ -186,8 +314,8 @@
    <slot>parseBusStopNumber()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>401</x>
-     <y>384</y>
+     <x>412</x>
+     <y>448</y>
     </hint>
     <hint type="destinationlabel">
      <x>140</x>
@@ -202,8 +330,8 @@
    <slot>parseBusStopNumber()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>541</x>
-     <y>371</y>
+     <x>677</x>
+     <y>448</y>
     </hint>
     <hint type="destinationlabel">
      <x>802</x>
@@ -211,8 +339,75 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>BusSvcList</sender>
+   <signal>activated(QString)</signal>
+   <receiver>TransportService</receiver>
+   <slot>parseBusSvc()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>388</x>
+     <y>465</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>7</x>
+     <y>399</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>svcEnterBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>TransportService</receiver>
+   <slot>parseSvcQuery()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>714</x>
+     <y>467</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>710</x>
+     <y>514</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>BusSvcList</sender>
+   <signal>activated(QString)</signal>
+   <receiver>TransportService</receiver>
+   <slot>parseSvcQuery()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>388</x>
+     <y>465</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>458</x>
+     <y>269</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SvcDirList</sender>
+   <signal>activated(QString)</signal>
+   <receiver>TransportService</receiver>
+   <slot>parseSvcQuery()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>581</x>
+     <y>454</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>550</x>
+     <y>512</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>parseBusStopNumber()</slot>
+  <slot>parseBusSvc()</slot>
+  <slot>parseBusSvcDir()</slot>
+  <slot>parseSvcQuery()</slot>
  </slots>
 </ui>

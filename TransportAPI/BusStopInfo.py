@@ -2,6 +2,7 @@ import json
 import os
 import ssl
 import urllib.request
+from urllib.error import URLError
 from dotenv import load_dotenv
 from math import sqrt
 from pathlib import Path
@@ -26,7 +27,7 @@ def request_bus_stop_name_lta(bus_stop_code: int or str, api_key: str, debug: bo
     """
     skip_val = 0
     while True:
-        url = f"http://datamall2.mytransport.sg/ltaodataservice/BusStops?$skip={skip_val}"
+        url = f"https://datamall2.mytransport.sg/ltaodataservice/BusStops?$skip={skip_val}"
 
         headers = {
             "AccountKey": api_key,
@@ -106,7 +107,7 @@ def store_bus_stop_data(api_key: str):
     curr_data = {"value": []}
     skip_val = 0
     while True:
-        url = f"http://datamall2.mytransport.sg/ltaodataservice/BusStops?$skip={skip_val}"
+        url = f"https://datamall2.mytransport.sg/ltaodataservice/BusStops?$skip={skip_val}"
 
         headers = {
             "AccountKey": api_key,

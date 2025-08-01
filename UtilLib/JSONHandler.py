@@ -53,6 +53,9 @@ class JSONHandler:
 
             self.logger.info(f"JSON File ({self.json}) does not exist. Creating...", to_console=False)
 
+            if os.path.exists(Path(self.json_fp).parent):
+                os.mkdir(Path(self.json_fp).parent)
+
             with open(self.json_fp, "w") as json_file:
                 json_file.write(json_dump(data_dict))
                 json_file.close()
@@ -131,3 +134,18 @@ class JSONHandler:
         :return:
         """
         del self.json_data[key]
+
+
+def setDebugState_JSONLib(state: bool, fp: Path or str = ""):
+    """
+    Method to set Filepath of JSONLib.
+    :param fp:
+    :param state:
+    :return:
+    """
+    if state is False:
+        global JSON_LIB
+        if fp == "":
+            pass
+        else:
+            JSON_LIB = fp
